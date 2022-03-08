@@ -3,7 +3,6 @@ package fabric;
 import fabric.workers.Maker;
 import fabric.workers.Saver;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,9 +23,6 @@ import java.util.concurrent.TimeUnit;
  *  </li>
      * Цикл повторяется до тех пор, пока на складе не будет определённое количество девайсов.
  * </p>
- *
- *
- *
  */
 public class ProcessingLine {
 
@@ -43,7 +39,6 @@ public class ProcessingLine {
 
         workers.execute(new Saver(fabricStorage));
 
-
         while(fabricStorage.getDevicesContainer().size() < 500_000){
 
            addWorker(requiredQuantity);
@@ -52,6 +47,8 @@ public class ProcessingLine {
 
            checkDevices();
         }
+
+        workers.shutdown();
     }
 
     /**
@@ -69,12 +66,9 @@ public class ProcessingLine {
      * Добавляет нового рабочего в пул потоков {@code workers}
      * @param requiredQuantity количество изделий, которое необходимо произвести рабочему
      */
-    private void addWorker(int requiredQuantity){
-        workers.execute(()-> {
-            for (int i = 0; i < requiredQuantity; i++) {
-                fabricStorage.putDeviceInto(new Device());
-            }
-        });
+    private void addWorker(int requiredQuantity) {
+        Maker worker = new Maker(fabricStorage, requiredQuantity);
+        workers.execute(worker);
     }
 
     /**

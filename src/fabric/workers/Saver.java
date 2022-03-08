@@ -1,8 +1,10 @@
 package fabric.workers;
 
+import fabric.Device;
 import fabric.Storage;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 
@@ -28,31 +30,39 @@ public class Saver implements Runnable{
     @Override
     public void run() {
         try {
-            File devices = new File("production.pack");
-
-            fileStream = new FileOutputStream(devices);
-
-            saveToFile = new ObjectOutputStream(fileStream);
+            openStreams();
 
             while (true) {
                 saveProductionsIntoFile();
+                closeStreams();
                 waitFor();
+                openStreams();
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | InterruptedException e) {
+            return;
         }
+    }
+
+    private void openStreams() throws IOException {
+        File devices = new File("production.pack");
+
+        fileStream = new FileOutputStream(devices);
+
+        saveToFile = new ObjectOutputStream(fileStream);
+    }
+
+    private void closeStreams() throws IOException {
+        fileStream.close();
+        saveToFile.close();
     }
 
     private void saveProductionsIntoFile() throws IOException {
-        saveToFile.writeObject(linkedStorage.getDevicesContainer());
+        ArrayList<Device> bufferStorage = new ArrayList<>(linkedStorage.getDevicesContainer());
+        saveToFile.writeObject(bufferStorage);
     }
 
-    private void waitFor(){
-        try {
-            TimeUnit.SECONDS.sleep(5);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    private void waitFor() throws InterruptedException {
+        TimeUnit.SECONDS.sleep(5);
     }
 }

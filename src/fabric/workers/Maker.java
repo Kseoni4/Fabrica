@@ -23,7 +23,6 @@ public class Maker implements Runnable{
         this.requiredQuantity = requiredQuantity;
     }
 
-
     @Override
     public void run() {
         while(true){
