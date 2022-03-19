@@ -10,11 +10,11 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class Device {
 
-    private static final String[] deviceNameA = {"BVX","SAO","ITM","DDO","VXZ","WOD","ZTB","PVI"};
+    private static String[] deviceNameA = {"BVX","SAO","ITM","DDO","VXZ","WOD","ZTB","PVI"};
 
-    private static final String[] deviceNameB = {"20","24","01","07","12","09","44","91"};
+    private static String[] deviceNameB = {"20","24","01","07","12","09","44","91"};
 
-    private final int[] someNumbers;
+    private int[] someNumbers;
 
     private final String name;
 

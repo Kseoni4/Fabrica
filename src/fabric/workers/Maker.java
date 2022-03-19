@@ -25,12 +25,16 @@ public class Maker implements Runnable{
 
     @Override
     public void run() {
-        while(true){
-            for(int i = 0; i < requiredQuantity; i++) {
-                produce();
-                waitForMilliSeconds(100);
+        try {
+            while (true) {
+                for (int i = 0; i < requiredQuantity; i++) {
+                    produce();
+                    waitForMilliSeconds(100);
+                }
+                waitForSeconds(3);
             }
-            waitForSeconds(3);
+        }catch (InterruptedException e){
+            return;
         }
     }
 
@@ -40,19 +44,11 @@ public class Maker implements Runnable{
         linkedStorage.putDeviceInto(newDevice);
     }
 
-    private void waitForMilliSeconds(int number){
-        try {
-            TimeUnit.MILLISECONDS.sleep(number);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    private void waitForMilliSeconds(int number) throws InterruptedException {
+        TimeUnit.MILLISECONDS.sleep(number);
     }
 
-    private void waitForSeconds(int number){
-        try {
-            TimeUnit.SECONDS.sleep(number);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    private void waitForSeconds(int number) throws InterruptedException {
+        TimeUnit.SECONDS.sleep(number);
     }
 }

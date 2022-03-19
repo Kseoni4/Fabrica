@@ -24,22 +24,22 @@ import java.util.concurrent.TimeUnit;
      * Цикл повторяется до тех пор, пока на складе не будет определённое количество девайсов.
  * </p>
  */
-public class ProcessingLine {
+public class ProcessingLine implements Runnable{
 
-    private final ExecutorService workers = Executors.newCachedThreadPool();
+    private ExecutorService workers = Executors.newCachedThreadPool();
 
     private Storage fabricStorage;
+
+    public int requiredQuantity;
 
     /**
      * Запускает процесс производства изделий {@link Device}
      * @param requiredQuantity количество изделий, которое необходимо произвести каждому рабочему потоку
      */
-    public void startWorking(int requiredQuantity){
-        fabricStorage = new Storage();
-
+    private void startWorking(int requiredQuantity){
         workers.execute(new Saver(fabricStorage));
 
-        while(fabricStorage.getDevicesContainer().size() < 500_000){
+        while(fabricStorage.getDevicesContainer().size() < 300_000){
 
            addWorker(requiredQuantity);
 
@@ -80,5 +80,15 @@ public class ProcessingLine {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void run() {
+        startWorking(requiredQuantity);
+    }
+
+    public ProcessingLine(int requiredQuantity, Storage fabricStorage){
+        this.requiredQuantity = requiredQuantity;
+        this.fabricStorage = fabricStorage;
     }
 }

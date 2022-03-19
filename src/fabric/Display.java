@@ -3,6 +3,8 @@ package fabric;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * <p>
@@ -17,9 +19,14 @@ public class Display {
      */
     private static ArrayList<String> logHistory = new ArrayList<>();
 
+    private static SoftReference<ArrayList<String>> listSoftReference = new SoftReference<>(logHistory);
+
+    private static Logger logger = Logger.getGlobal();
+
     public static void show(String s) {
-        //logHistory.add(s);
-        System.out.println(s);
+        listSoftReference.get().add(s);
+        logger.info(s);
     }
 
+    private Display(){}
 }
